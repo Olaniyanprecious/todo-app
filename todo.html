@@ -16,6 +16,22 @@
                 <button onclick="addTask()">Add</button>
             </div>
 
+            <div class="todo-controls">
+                <div class="todo-controls-group">
+                    <label for="searchInput">Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by title or description">
+                </div>
+                <div class="todo-controls-group">
+                    <label for="filterSelect">Filter</label>
+                    <select id="filterSelect">
+                        <option value="all">All Tasks</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                </div>
+            </div>
+
             <div id="addField">
 
             </div>

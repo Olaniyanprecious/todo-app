@@ -1,6 +1,10 @@
 const taskSection = document.getElementById("taskSection");
+const searchInput = document.getElementById("searchInput");
+const filterSelect = document.getElementById("filterSelect");
 
 let editingId = null;
+let currentQuery = "";
+let currentFilter = "all";
 
 let tasks = [
         {
@@ -36,7 +40,7 @@ let tasks = [
                         <button class="edit-btn" data-id="${id}">Edit</button>
 
                       <div>
-                       ${new Date(dueDate) < Date.now() ? `<p>Overdue</p>` : ""
+                       ${new Date(dueDate) < Date.now() ? `<p class='red'>Overdue</p>` : ""
                       }
                          </div>
                     </div>
@@ -49,15 +53,71 @@ let tasks = [
         taskSection.appendChild(node)
     }
 
+    function renderTaskList(list){
+        if(!taskSection){
+            return;
+        }
+        taskSection.innerHTML = "";
+        list.forEach(task => {
+            appendTask(task.title, task.dueDate, task.id, task.isCompleted, task.description);
+        });
+    }
+
+    function isOverdueTask(task){
+        const due = new Date(task.dueDate).getTime();
+        if(isNaN(due)){
+            return false;
+        }
+        return due < Date.now();
+    }
+
+    function applyFilters(){
+        let filtered = tasks.slice();
+
+        if(currentQuery){
+            filtered = filtered.filter(task => {
+                const content = `${task.title || ""} ${task.description || ""}`.toLowerCase();
+                return content.includes(currentQuery);
+            });
+        }
+
+        switch(currentFilter){
+            case "completed":
+                filtered = filtered.filter(task => task.isCompleted);
+                break;
+            case "active":
+                filtered = filtered.filter(task => !task.isCompleted);
+                break;
+            case "overdue":
+                filtered = filtered.filter(task => isOverdueTask(task));
+                break;
+            default:
+                break;
+        }
+
+        renderTaskList(filtered);
+    }
+
+    if(searchInput){
+        searchInput.addEventListener("input", function(e){
+            currentQuery = e.target.value.trim().toLowerCase();
+            applyFilters();
+        });
+    }
+
+    if(filterSelect){
+        filterSelect.addEventListener("change", function(e){
+            currentFilter = e.target.value;
+            applyFilters();
+        });
+    }
+
     function loadTask() {
     fetch("https://692ea16491e00bafccd49bc3.mockapi.io/todo/tasks")
     .then(res => res.json())
     .then(data => {
         tasks = data;
-        taskSection.innerHTML = "";
-        for(var i = 0; i <= tasks.length - 1; i++){
-            appendTask(tasks[i].title, tasks[i].dueDate, tasks[i].id, tasks[i].isCompleted, tasks[i].description)
-        }
+        applyFilters();
     })
 }
 
@@ -132,7 +192,7 @@ function inputTask() {
         .then(res => res.json())
         .then(newTask => {
             tasks.push(newTask);
-            appendTask(newTask.title, newTask.dueDate, newTask.id, false, newTask.description)
+            applyFilters();
         })
 
 const field = document.getElementById("addField");
@@ -182,8 +242,8 @@ taskSection.addEventListener("click", function(e){
         fetch(`https://692ea16491e00bafccd49bc3.mockapi.io/todo/tasks/${id}`, {
             method: "DELETE"
         })
-
-        e.target.closest(".todo-app-task").remove();
+        
+        applyFilters();
     }
 
     else if(e.target.classList.contains("edit-btn")){
