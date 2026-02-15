@@ -7,20 +7,20 @@ let currentQuery = "";
 let currentFilter = "all";
 
 let tasks = [
-        {
-            title: "Going to church",
-            dueDate: new Date().toLocaleDateString(),
-            id: 1,
-            isCompleted: true,
-            description: "lorem ipsum, how are you?"
-        },
-        {
-            title: "Going to mosque",
-            dueDate: new Date().toLocaleDateString(),
-            id: 2,
-            isCompleted: true,
-            description: "lorem ipsum, how are you?"
-        }
+        // {
+        //     title: "Going to church",
+        //     dueDate: new Date().toLocaleDateString(),
+        //     id: 1,
+        //     isCompleted: true,
+        //     description: "lorem ipsum, how are you?"
+        // },
+        // {
+        //     title: "Going to mosque",
+        //     dueDate: new Date().toLocaleDateString(),
+        //     id: 2,
+        //     isCompleted: true,
+        //     description: "lorem ipsum, how are you?"
+        // }
     ];
 
     function appendTask(title, dueDate, id, isCompleted, description){
